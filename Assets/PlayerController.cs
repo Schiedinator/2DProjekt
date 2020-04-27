@@ -6,13 +6,16 @@ public class PlayerController : MonoBehaviour
 {
     private Rigidbody2D rb;
     private Animator anim;
-    private enum State { idle, running, jumping}
+    private enum State { idle, running, jumping, falling}                           
     private State state = State.idle;
+    private Collider2D coll;
+    [SerializeField] private LayerMask ground;                          // [SerializeField] macht trotzdem sichtbar ist ein unity spezifischer tag                      bringt fehlermedlung, einfach ignorierne
 
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+        coll = GetComponent<Collider2D>();
     }
 
     private void Update()
@@ -36,7 +39,8 @@ public class PlayerController : MonoBehaviour
             //anim.SetBool("running", false );
         }
 
-        if (Input.GetButtonDown("Jump"))                                                                       //  über   inputs                       GetKeyDown(KeyCode.Space))    old
+        if (Input.GetButtonDown("Jump") && coll.IsTouchingLayers(ground))                      //https://docs.unity3d.com/ScriptReference/Collider2D.html                     über   inputs                       GetKeyDown(KeyCode.Space))    old               && heißt beide sachen müssen wahr sein         brauchen layer mask zeile 12
+                                                                                                                                                        //macht das er nur 1 mal springen kann wenn er ein "Ground" layer berührt
         {
             rb.velocity = new Vector2(rb.velocity.x, 10f);
             state = State.jumping;      //damit spiel weis das mir springen
@@ -49,9 +53,20 @@ public class PlayerController : MonoBehaviour
 
     private void VelocityState()
     {
-        if(state == State.jumping)
+        if(state == State.jumping)                      
         {
+            if(rb.velocity.y < 0.1f)                                //gravitiy bestimmt wenn er runterfällt dann spielt er animation beim fallen                zeilen 54 bis 68 sind nötig damit er automatisch wieder stehen bleibt wenn er den boden berührt
+            {
+                state = State.falling;
+            }
+        }
 
+        else if (state == State.falling)
+        {
+            if(coll.IsTouchingLayers(ground))
+            {
+                state = State.idle;
+            }
         }
 
         else if(Mathf.Abs(rb.velocity.x) > 2f) //epsilon wenn es einfach höher als 0 ist, besser als 0.xxxx - kleinstgröße nummer - alt if(rb.velocity.x > 0.1f)     Returns the smallest integral value that is greater than or equal to the specified single-precision floating-point number        old > Mathf.Epsilon
