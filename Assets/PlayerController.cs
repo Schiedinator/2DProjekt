@@ -6,11 +6,11 @@ public class PlayerController : MonoBehaviour                    //static da der
 {
     private Rigidbody2D rb;                                             //variablen kommen hier (rb)
     private Animator anim;
-    private enum State { idle, running, jumping, falling , hurt }
+    private enum State { idle, running, jumping, falling , hurt}
     private State state = State.idle;
     private Collider2D coll;
     [SerializeField] private LayerMask ground;                          // [SerializeField] macht trotzdem sichtbar ist ein unity spezifischer tag                      bringt fehlermedlung, einfach ignorierne
-    [SerializeField] private float hurt = 10;
+    //[SerializeField] private float hurt = 10;
 
     private void Start()
     {
@@ -29,28 +29,29 @@ public class PlayerController : MonoBehaviour                    //static da der
 
 
 
-             if (hdirection < 0)
+            if (hdirection < 0)
             {
-                rb.velocity = new Vector2(-5, rb.velocity.y);
+                rb.velocity = new Vector2(-6, rb.velocity.y);
                 transform.localScale = new Vector2(-1, 1);
             }
 
             else if (hdirection > 0)
             {
-                rb.velocity = new Vector2(5, rb.velocity.y);
+                rb.velocity = new Vector2(6, rb.velocity.y);
                 transform.localScale = new Vector2(1, 1);
             }
 
             if (Input.GetButtonDown("Jump") && coll.IsTouchingLayers(ground))                      //https://docs.unity3d.com/ScriptReference/Collider2D.html                     über   inputs                       GetKeyDown(KeyCode.Space))    old               && heißt beide sachen müssen wahr sein         brauchen layer mask zeile 12
                                                                                                    //macht das er nur 1 mal springen kann wenn er ein "Ground" layer berührt
             {
-                rb.velocity = new Vector2(rb.velocity.x, 10f);
+                rb.velocity = new Vector2(rb.velocity.x, 11f);
                 state = State.jumping;                                                              //damit spiel weis das mir springen
             }
 
-            VelocityState();                                                                                                                            //rennt die zeilen 50 bis 68                    ist eine "methode"
-            anim.SetInteger("state", (int)state);          //state int davor weil Zeile 9 sind ja nummern, deshalb kann man als int bezeichnen              system aktualisiert automatisch unseren status von charakterS
+            
         }
+        VelocityState();                                                                                                                            //rennt die zeilen 50 bis 68                    ist eine "methode"
+        anim.SetInteger("state", (int)state);          //state int davor weil Zeile 9 sind ja nummern, deshalb kann man als int bezeichnen              system aktualisiert automatisch unseren status von charakterS
     }
 
     private void OnCollisionEnter2D(Collision2D other)
@@ -99,7 +100,7 @@ public class PlayerController : MonoBehaviour                    //static da der
         }
         else if (state == State.hurt)
         {
-            if (Mathf.Abs(rb.velocity.x) < 0.1f)
+            if (Mathf.Abs(rb.velocity.x) < .1f)
             {
                 state = State.idle;
             }
