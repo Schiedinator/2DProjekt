@@ -10,7 +10,6 @@ public class PlayerController : MonoBehaviour                    //static da der
     private State state = State.idle;
     private Collider2D coll;
     [SerializeField] private LayerMask ground;                          // [SerializeField] macht trotzdem sichtbar ist ein unity spezifischer tag                      bringt fehlermedlung, einfach ignorierne
-    //[SerializeField] private float hurt = 10;
 
     private void Start()
     {
@@ -96,6 +95,10 @@ public class PlayerController : MonoBehaviour                    //static da der
             if(coll.IsTouchingLayers(ground))
             {
                 state = State.idle;
+            }
+            else if (rb.velocity.y < 0.1f)                                //gravitiy bestimmt wenn er runterfällt dann spielt er animation beim fallen                zeilen 54 bis 68 sind nötig damit er automatisch wieder stehen bleibt wenn er den boden berührt
+            {
+                state = State.falling;
             }
         }
         else if (state == State.hurt)
