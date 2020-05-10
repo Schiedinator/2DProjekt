@@ -51,6 +51,11 @@ public class PlayerController : MonoBehaviour                    //static da der
         }
         VelocityState();                                                                                                                            //rennt die zeilen 50 bis 68                    ist eine "methode"
         anim.SetInteger("state", (int)state);          //state int davor weil Zeile 9 sind ja nummern, deshalb kann man als int bezeichnen              system aktualisiert automatisch unseren status von charakterS
+       
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+        Application.Quit();
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D other)
